@@ -1,0 +1,66 @@
+{% extends "blog/base.html" %}
+{% block content %}
+
+<!-- Displays the homepage with all blog posts -->
+
+  {% if user.is_authenticated %}
+    {% if posts %}
+        {% for post in posts %}
+        <!-- ARTICLE TAG -->
+        <article class="media content-section">
+          <!-- to dispaly img with the post on home pg -->
+            <img class='rounded-circle article-img' src="{{ post.author.profile.image.url|default:'default_image_url_here' }}" alt="">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                    <small class="text-muted">{{ post.date_posted|date:"F d, Y" }}</small>
+                </div>   
+                <!-- post clickable wala kaam idhr kia hm ne  -->           
+                <h2><a class="article-title" href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h2>
+                <p class="article-content">{{ post.content }}</p>
+            </div>
+        </article>
+        {% endfor %}
+  
+       <!-- ================================ PAGINATION ============================ -->
+
+        {% if is_paginated %}  <!-- Check if the page is paginated -->
+            {% if page_obj.has_previous %}  <!-- Check if there are previous pages available -->
+                <a class='btn btn-outline-info mb-4' href="?page=1">First</a>
+                <a class='btn btn-outline-info mb-4' href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            {% endif %}
+            
+            <!-- Loop through all the page numbers -->
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %} <!-- If the current page is equal to the page number, highlight it (do not make it a link) -->
+                    <a class='btn btn-info mb-4' href="?page={{ num }}">{{ num }}</a>
+            <!-- If the page number is within a range of 3 pages before or after the current page, show the link -->
+                {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                    <a class='btn btn-outline-info mb-4' href="?page={{ num }}">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a class='btn btn-outline-info mb-4' href="?page={{ page_obj.next_page_number }}">Next</a>
+                <a class='btn btn-outline-info mb-4' href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+            {% endif %}
+        {% endif %}
+
+    {% else %}
+        <p>No posts available. Please check back later!</p>
+    {% endif %}
+    
+    {% else %}
+    <p class="alert alert-info">Please <a href="{% url 'login' %}">log in</a> to view blog posts.</p>
+    {% endif %}
+
+{% endblock content %}
+
+<!-- PAGINATOR -->
+
+<!-- " is a Django-provided object that contains "details about the current page of data" in a "paginated list".
+It includes information such as the current page number, whether previous/next pages exist, and the total number of pages.
+It's essential for rendering paginated content and navigation links in templates. -->
+
+<!-- When you use ListView (or manually use the Paginator class), Django includes page_obj in the context of the template by default. 
+ It represents the current page of the paginated data. -->

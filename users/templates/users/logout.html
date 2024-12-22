@@ -1,0 +1,10 @@
+{% extends "blog/base.html" %} <!--this template inherits the structure and styles from blog/base.html-->
+
+{% block content %}
+
+<h2> You have been Logged out! </h2>
+    <div class = "border-top mb-4  pt-3"> 
+       <small class="text-muted">  <a  class="ml-2" href="{% url 'login' %}">  Log In Again </a></small>
+    </div>
+    
+{% endblock content %}

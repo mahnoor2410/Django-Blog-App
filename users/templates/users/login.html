@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %} <!--this template inherits the structure and styles from blog/base.html-->
+
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="content_section">
+    <form method="POST"> 
+        {% csrf_token %} <!-- prevent from attacks  that could submit unauthorized data to the server -->
+        <fieldset class='form_group'> <!-- group feild -->
+            <legend class="border-bottom mb-4"> Join Today </legend> <!-- title display -->
+            {{ form|crispy }} <!-- Dynamically renders the form -->
+        </fieldset>
+        <div class="form_group">
+            <button class="btn btn-outline-info" type="submit"> Log In </button>
+            <small class="text-muted ml-2"> <a href="{% url 'password_reset' %}"> Forgot Password? </a></small>
+        </div>
+    </form>
+
+    <div class = "border-top mb-4  pt-3"> 
+       <small class="text-muted"> Create an Account? <a  class="ml-2" href="{% url 'register' %}"> Sign Up Now </a></small>
+    </div>
+</div>     
+
+{% endblock content %}
